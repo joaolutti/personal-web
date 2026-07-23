@@ -1,0 +1,53 @@
+---
+const pathname = Astro.url.pathname;
+
+const isRouteActive = (route: string) => {
+    return pathname === route || pathname.startsWith(`${route}/`)
+}
+
+const projectsActive = isRouteActive('/projects');
+const writingActive = isRouteActive('/writing');
+
+const isHome = pathname === '/'
+---
+<nav>
+    <a href="/">
+        joão lutti
+    </a>
+    {
+        isHome && (
+            <>
+                <a href="#work">work</a>
+                <a href="/projects">projects</a>
+                <a href="/writing">writing</a>
+                <button>
+                    resume
+                </button>
+            </>
+        )
+    }
+    {
+        projectsActive && (
+            <>
+                <a href="/writing">writing</a>
+                <a href="/">back</a>
+            </>
+        )
+    }
+    {
+        writingActive && (
+            <>
+
+                <a href="/projects" >projects</a>
+                <a href="/">back</a>
+            </>
+        )
+    }
+    <button>
+        theme
+    </button>
+</nav>
+
+<style>
+    nav {}
+</style>

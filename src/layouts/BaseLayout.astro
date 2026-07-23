@@ -1,0 +1,83 @@
+---
+import Nav from '../components/Nav.astro';
+const {pageTitle} = Astro.props
+
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<!-- need to change these icons later -->
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{pageTitle}</title>
+	</head>
+	<body>
+		<Nav />
+		<slot />
+	</body>
+</html>
+
+
+<style is:global>
+	/* dark theme */
+	:root,
+	:root[data-theme='dark'] {
+		--bg:           #0e0d0b;
+		--nav-bg:       rgba(14, 13, 11, 0.72);
+		--text:         #ece7dd;
+		--text2:        #cfc7b8;
+		--muted:        #98917f;
+		--faint:        #6f685c;
+		--accent:       #9a94ee;
+		--accent-soft:  rgba(154, 148, 238, 0.20);
+
+		/* Borders */
+		--border-soft:   rgba(236, 231, 221, 0.08);
+		--border:        rgba(236, 231, 221, 0.12);
+		--border-strong: rgba(236, 231, 221, 0.22);
+
+		/* Surfaces */
+		--hover:  rgba(236, 231, 221, 0.035);
+		--stripe: rgba(236, 231, 221, 0.05);
+	}
+
+	/* light theme */
+	:root[data-theme='light'] {
+		--bg:           #f6f3ee;
+		--nav-bg:       rgba(246, 243, 238, 0.72);
+		--text:         #262320;
+		--text2:        #3a362f;
+		--muted:        #5c564d;
+		--faint:        #a39a8b;
+		--accent:       #5b53a8;
+		--accent-soft:  rgba(91, 83, 168, 0.16);
+
+		--border-soft:   rgba(38, 35, 32, 0.08);
+		--border:        rgba(38, 35, 32, 0.10);
+		--border-strong: rgba(38, 35, 32, 0.18);
+
+		--hover:  rgba(38, 35, 32, 0.02);
+		--stripe: rgba(38, 35, 32, 0.035);
+	}
+
+	/* typography and layout vars */
+	:root {
+		--font-sans: 'Instrument Sans', system-ui, sans-serif;
+		--font-mono: 'JetBrains Mono', monospace;
+
+		--max-width: 780px;
+		--page-padding-x: 28px;
+		--nav-height: 60px;
+	}
+
+	html,
+	body {
+		margin: 0;
+		width: var(--max-width);
+		height: 100%;
+	}
+</style>
