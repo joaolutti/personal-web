@@ -1,15 +1,30 @@
 ---
 import Welcome from '../components/Welcome.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionTitle from '../components/SectionTitle.astro';
 ---
 
 <BaseLayout>
-	<section id="hero">
+	<section id="hero" class="hero">
+		<div class="placeholder-canvas">
 
+		</div>
+		<h1>joão lutti </h1>
+		<p class="bio">
+			I build fast, considered web products from the database to the last pixel.
+			Recent SWE graduate from the University of Calgary who cares about latency, typography,
+			and the small details that make software feel calm.
+		</p>
+		<div class="socials">
+			<a href="">github ↗</a>
+			<a href="">linkedin ↗</a>	
+			<!-- email link points to cta -->
+			<a href="">email ↓</a>
+		</div>
 	</section>
 
 	<section id="work">
-
+		<SectionTitle section="selected work"/>
 	</section>
 
 	<section id="stack">
@@ -17,7 +32,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 	</section>
 
 	<section id="currently-doing">
-		
 	</section>
 
 	<section id="cta">
@@ -25,3 +39,40 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 	</section>
 
 </BaseLayout>
+
+<style>
+	.placeholder-canvas {
+		width: 100%;
+		height: 380px;
+		border-radius: 16px;
+		border: 1px solid var(--border);
+	}
+
+	.bio {
+		font-size: 20px;
+		line-height: 1.5;
+		color: var(--muted);
+		text-wrap: pretty;
+	}
+	#hero h1 {
+		color: var(--text);
+		font-weight: 500;
+		letter-spacing: -0.03em;
+		line-height: 1.05;
+		font-size: clamp(2.5rem, 6vw, 4rem);
+	}
+
+	.hero {
+		padding: 56px 0 90px;
+		scroll-margin-top: 80px;
+	}
+
+	.socials {
+		display: flex;
+		align-items: center;
+		gap: 22px;
+		flex-wrap: wrap;
+	}
+
+
+</style>

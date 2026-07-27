@@ -1,5 +1,7 @@
 ---
 import Nav from '../components/Nav.astro';
+import '@fontsource-variable/instrument-sans';
+import '@fontsource-variable/jetbrains-mono';
 const {pageTitle} = Astro.props
 
 ---
@@ -16,8 +18,12 @@ const {pageTitle} = Astro.props
 		<title>{pageTitle}</title>
 	</head>
 	<body>
-		<Nav />
-		<slot />
+		<header class="site-header">
+			<Nav />
+		</header>
+		<main class="page-content">
+			<slot />
+		</main>
 	</body>
 </html>
 
@@ -66,8 +72,8 @@ const {pageTitle} = Astro.props
 
 	/* typography and layout vars */
 	:root {
-		--font-sans: 'Instrument Sans', system-ui, sans-serif;
-		--font-mono: 'JetBrains Mono', monospace;
+		--font-sans: 'Instrument Sans Variable', system-ui, sans-serif;
+		--font-mono: 'JetBrains Mono Variable', monospace;
 
 		--max-width: 780px;
 		--page-padding-x: 28px;
@@ -76,8 +82,23 @@ const {pageTitle} = Astro.props
 
 	html,
 	body {
+		font-family: var(--font-sans);
+		background-color: var(--bg);
 		margin: 0;
-		width: var(--max-width);
 		height: 100%;
+	}
+
+	.site-header {
+		position: sticky;
+		top: 0;
+		z-index: 50;
+		border-bottom: 1px solid var(--border);
+		backdrop-filter: blur(10px);
+		background: var(--nav-bg);
+	}
+
+	.page-content {
+		max-width: var(--max-width);
+		margin-inline: auto;
 	}
 </style>

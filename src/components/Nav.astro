@@ -16,38 +16,63 @@ const isHome = pathname === '/'
     </a>
     {
         isHome && (
-            <>
+            <div class="nav-links">
                 <a href="#work">work</a>
                 <a href="/projects">projects</a>
                 <a href="/writing">writing</a>
-                <button>
+                <a href="">
                     resume
+                </a>
+                <button>
+                    test
                 </button>
-            </>
+            </div>
         )
     }
     {
         projectsActive && (
-            <>
+            <div class="nav-links">
                 <a href="/writing">writing</a>
                 <a href="/">back</a>
-            </>
+                <button>
+                    theme
+                </button>
+            </div>
         )
     }
     {
         writingActive && (
-            <>
+            <div class="nav-links">
 
                 <a href="/projects" >projects</a>
                 <a href="/">back</a>
-            </>
+                <button>
+                    theme
+                </button>
+            </div>
         )
     }
-    <button>
-        theme
-    </button>
 </nav>
 
 <style>
-    nav {}
+    nav {
+        max-width: var(--max-width);
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 var(--page-padding-x);
+        height: var(--nav-height); 
+    }
+
+    .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+    }
+
+    button {
+        display: inline-flex;
+        align-items: center;
+    }
 </style>
