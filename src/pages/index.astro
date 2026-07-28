@@ -2,6 +2,7 @@
 import Welcome from '../components/Welcome.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionTitle from '../components/SectionTitle.astro';
+import Card from '../components/Card.astro';
 ---
 
 <BaseLayout>
@@ -25,6 +26,7 @@ import SectionTitle from '../components/SectionTitle.astro';
 
 	<section id="work">
 		<SectionTitle section="selected work"/>
+		<Card title="testing title" year="2026" description="a personal website built with astro, tailwind, and typescript" stack={["astro", "tailwind", "typescript"]}/>
 	</section>
 
 	<section id="stack">
