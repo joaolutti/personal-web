@@ -2,30 +2,25 @@
 const pathname = Astro.url.pathname;
 
 const isRouteActive = (route: string) => {
-    return pathname === route || pathname.startsWith(`${route}/`)
-}
+    return pathname === route || pathname.startsWith(`${route}/`);
+};
 
 const projectsActive = isRouteActive('/projects');
 const writingActive = isRouteActive('/writing');
 
-const isHome = pathname === '/'
+const isHome = pathname === '/';
 ---
+
 <nav>
-    <a href="/">
-        joão lutti
-    </a>
+    <a href="/"> joão lutti </a>
     {
         isHome && (
             <div class="nav-links">
                 <a href="#work">work</a>
                 <a href="/projects">projects</a>
                 <a href="/writing">writing</a>
-                <a href="">
-                    resume
-                </a>
-                <button>
-                    test
-                </button>
+                <a href="">resume</a>
+                <button>test</button>
             </div>
         )
     }
@@ -34,21 +29,16 @@ const isHome = pathname === '/'
             <div class="nav-links">
                 <a href="/writing">writing</a>
                 <a href="/">back</a>
-                <button>
-                    theme
-                </button>
+                <button>theme</button>
             </div>
         )
     }
     {
         writingActive && (
             <div class="nav-links">
-
-                <a href="/projects" >projects</a>
+                <a href="/projects">projects</a>
                 <a href="/">back</a>
-                <button>
-                    theme
-                </button>
+                <button>theme</button>
             </div>
         )
     }
@@ -62,7 +52,7 @@ const isHome = pathname === '/'
         align-items: center;
         justify-content: space-between;
         padding: 0 var(--page-padding-x);
-        height: var(--nav-height); 
+        height: var(--nav-height);
     }
 
     .nav-links {

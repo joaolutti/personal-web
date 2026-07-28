@@ -1,9 +1,9 @@
 ---
 interface Props {
-    title: string,
-    year: string,
-    description: string,
-    stack: string[],
+    title: string;
+    year: string;
+    description: string;
+    stack: string[];
 }
 
 const { title, year, description, stack } = Astro.props;
@@ -11,29 +11,29 @@ const { title, year, description, stack } = Astro.props;
 
 <article class="card">
     <a href="">
-    <div class="upper-row">
-        <div class="project-title">
-            <h2>
-              {title}
-            </h2>
+        <div class="upper-row">
+            <div class="project-title">
+                <h2>
+                    {title}
+                </h2>
+            </div>
+            <h3>{year}</h3>
         </div>
-        <h3>{year}</h3>
-    </div>
-    <div class="bottom-row">
-        <div class="body">
-            <p>{description}</p>
-            <span class="stack-item">
-                {stack.map((entry, i) => (
-                <>
-                <span>{entry}</span>
-                { i < stack.length - 1 && (
-                    <span> • </span>
-                )}
-                </>             
-            ))}
-            </span>
+        <div class="bottom-row">
+            <div class="body">
+                <p>{description}</p>
+                <span class="stack-item">
+                    {
+                        stack.map((entry, i) => (
+                            <>
+                                <span>{entry}</span>
+                                {i < stack.length - 1 && <span> • </span>}
+                            </>
+                        ))
+                    }
+                </span>
+            </div>
         </div>
-    </div>
     </a>
 </article>
 
@@ -42,7 +42,9 @@ const { title, year, description, stack } = Astro.props;
         display: block;
         border-top: 1px solid var(--border);
         padding: 26px 8px 26px 0;
-                transition: padding-left 0.25s ease,background 0.25s ease;
+        transition:
+            padding-left 0.25s ease,
+            background 0.25s ease;
     }
 
     a {
@@ -50,9 +52,9 @@ const { title, year, description, stack } = Astro.props;
     }
 
     .card:hover {
-            padding-left: 14px;
-            background: var(--hover);
-        }
+        padding-left: 14px;
+        background: var(--hover);
+    }
 
     .upper-row {
         display: flex;
@@ -68,13 +70,13 @@ const { title, year, description, stack } = Astro.props;
     }
 
     h2::before {
-            content: '↳ ';
-            font-family: var(--font-mono);
-            font-size: 12px;
-            color: var(--faint);
-            margin-right: 14px;
-        }
-    
+        content: '↳ ';
+        font-family: var(--font-mono);
+        font-size: 12px;
+        color: var(--faint);
+        margin-right: 14px;
+    }
+
     h2 {
         font-size: 22px;
         font-weight: 500;
@@ -101,5 +103,4 @@ const { title, year, description, stack } = Astro.props;
         font-size: 12px;
         font-family: var(--font-mono);
     }
-
 </style>

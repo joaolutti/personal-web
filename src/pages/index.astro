@@ -6,75 +6,71 @@ import Card from '../components/Card.astro';
 ---
 
 <BaseLayout>
-	<section id="hero" class="hero">
-		<div class="placeholder-canvas">
+    <section id="hero" class="hero">
+        <div class="placeholder-canvas"></div>
+        <h1>joão lutti</h1>
+        <p class="bio">
+            I build fast, considered web products from the database to the last
+            pixel. Recent SWE graduate from the University of Calgary who cares
+            about latency, typography, and the small details that make software
+            feel calm.
+        </p>
+        <div class="socials">
+            <a href="">github ↗</a>
+            <a href="">linkedin ↗</a>
+            <!-- email link points to cta -->
+            <a href="">email ↓</a>
+        </div>
+    </section>
 
-		</div>
-		<h1>joão lutti </h1>
-		<p class="bio">
-			I build fast, considered web products from the database to the last pixel.
-			Recent SWE graduate from the University of Calgary who cares about latency, typography,
-			and the small details that make software feel calm.
-		</p>
-		<div class="socials">
-			<a href="">github ↗</a>
-			<a href="">linkedin ↗</a>	
-			<!-- email link points to cta -->
-			<a href="">email ↓</a>
-		</div>
-	</section>
+    <section id="work">
+        <SectionTitle section="selected work" />
+        <Card
+            title="testing title"
+            year="2026"
+            description="a personal website built with astro, tailwind, and typescript"
+            stack={['astro', 'tailwind', 'typescript']}
+        />
+    </section>
 
-	<section id="work">
-		<SectionTitle section="selected work"/>
-		<Card title="testing title" year="2026" description="a personal website built with astro, tailwind, and typescript" stack={["astro", "tailwind", "typescript"]}/>
-	</section>
+    <section id="stack"></section>
 
-	<section id="stack">
+    <section id="currently-doing"></section>
 
-	</section>
-
-	<section id="currently-doing">
-	</section>
-
-	<section id="cta">
-
-	</section>
-
+    <section id="cta"></section>
 </BaseLayout>
 
 <style>
-	.placeholder-canvas {
-		width: 100%;
-		height: 380px;
-		border-radius: 16px;
-		border: 1px solid var(--border);
-	}
+    .placeholder-canvas {
+        width: 100%;
+        height: 380px;
+        border-radius: 16px;
+        border: 1px solid var(--border);
+    }
 
-	.bio {
-		font-size: 20px;
-		line-height: 1.5;
-		color: var(--muted);
-		text-wrap: pretty;
-	}
-	#hero h1 {
-		color: var(--text);
-		font-weight: 500;
-		letter-spacing: -0.03em;
-		line-height: 1.05;
-		font-size: clamp(2.5rem, 6vw, 4rem);
-	}
+    .bio {
+        font-size: 20px;
+        line-height: 1.5;
+        color: var(--muted);
+        text-wrap: pretty;
+    }
+    #hero h1 {
+        color: var(--text);
+        font-weight: 500;
+        letter-spacing: -0.03em;
+        line-height: 1.05;
+        font-size: clamp(2.5rem, 6vw, 4rem);
+    }
 
-	.hero {
-		padding: 56px 0 90px;
-		scroll-margin-top: 80px;
-	}
+    .hero {
+        padding: 56px 0 90px;
+        scroll-margin-top: 80px;
+    }
 
-	.socials {
-		display: flex;
-		align-items: center;
-		gap: 22px;
-		flex-wrap: wrap;
-	}
-
-
+    .socials {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        flex-wrap: wrap;
+    }
 </style>
