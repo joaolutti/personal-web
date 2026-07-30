@@ -1,0 +1,46 @@
+---
+interface Props {
+    action: string;
+    item: string;
+    comment: string;
+}
+
+const { action, item, comment } = Astro.props;
+---
+
+<article class="row-grid">
+    <div class="action">{action}</div>
+    <div class="item">
+        {item} <span> — {comment}</span>
+    </div>
+</article>
+
+<style>
+    .row-grid {
+        display: grid;
+        grid-template-columns: 120px 1fr;
+        gap: 20px;
+        padding: 16px 0;
+        border-top: 1px solid var(--border);
+    }
+
+    .row-grid:last-of-type {
+        border-bottom: 1px solid var(--border);
+    }
+
+    .action {
+        font-family: var(--font-mono);
+        font-size: 12.5px;
+        color: var(--faint);
+        padding-top: 2px;
+    }
+
+    .item {
+        front-size: 16px;
+        color: var(--text2);
+
+        span {
+            color: var(--faint);
+        }
+    }
+</style>

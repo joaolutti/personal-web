@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionTitle from '../components/SectionTitle.astro';
 import Card from '../components/Card.astro';
 import { categories, getIconPath, icons, stack } from '../data/stack';
+import RowEntry from '../components/RowEntry.astro';
 ---
 
 <BaseLayout>
@@ -69,6 +70,21 @@ import { categories, getIconPath, icons, stack } from '../data/stack';
     </section>
     <section id="currently-doing">
         <SectionTitle section="currently" text="updated monthly" />
+        <RowEntry
+            action="reading"
+            item="Annihilation"
+            comment="Jeff Vandermeer"
+        />
+        <RowEntry
+            action="listening"
+            item="The Mountain by Gorillaz"
+            comment="on loop while doing pretty much anything"
+        />
+        <RowEntry
+            action="playing"
+            item="World of Warcraft"
+            comment="zug zug"
+        />
     </section>
 
     <section id="cta"></section>
