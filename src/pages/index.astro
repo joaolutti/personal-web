@@ -1,8 +1,8 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionTitle from '../components/SectionTitle.astro';
 import Card from '../components/Card.astro';
+import { categories, getIconPath, icons, stack } from '../data/stack';
 ---
 
 <BaseLayout>
@@ -31,16 +31,53 @@ import Card from '../components/Card.astro';
             description="a personal website built with astro, tailwind, and typescript"
             stack={['astro', 'tailwind', 'typescript']}
         />
+        <div class="projects-cta">
+            <a href="#">all work in detail →</a>
+        </div>
     </section>
 
-    <section id="stack"></section>
-
-    <section id="currently-doing"></section>
+    <section id="stack">
+        <SectionTitle section="stack" />
+        <div class="skills-grid">
+            {
+                categories.map((category) => {
+                    const categorySkills = stack.filter(
+                        (stack) => stack.category === category
+                    );
+                    return (
+                        <article class="skill-col">
+                            <h2>{category}</h2>
+                            <ul class="skill-list">
+                                {categorySkills.map((skill) => (
+                                    <li class="skill">
+                                        <span
+                                            class="skill__icon"
+                                            style={`
+                                                --icon-url: url("${getIconPath(skill.icon)}");
+                                                --icon-color: ${icons[skill.icon].color};
+                                                `}
+                                        />
+                                        <span>{skill.name}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </article>
+                    );
+                })
+            }
+        </div>
+    </section>
+    <section id="currently-doing">
+        <SectionTitle section="currently" text="updated monthly" />
+    </section>
 
     <section id="cta"></section>
 </BaseLayout>
 
 <style>
+    section {
+        padding: 0px 0px 96px;
+    }
     .placeholder-canvas {
         width: 100%;
         height: 380px;
@@ -72,5 +109,66 @@ import Card from '../components/Card.astro';
         align-items: center;
         gap: 22px;
         flex-wrap: wrap;
+    }
+
+    #work {
+        scroll-margin-top: 80px;
+    }
+
+    .projects-cta {
+        margin-top: 32px;
+    }
+    .projects-cta a {
+        font-family: var(--font-mono);
+        font-size: 13px;
+        color: var(--muted);
+        text-decoration: none;
+    }
+    .projects-cta a:hover {
+        color: var(--text);
+    }
+
+    /* #stack {
+        padding: 0 0 96px;
+    } */
+    .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 28px;
+    }
+
+    .skill-list {
+        display: grid;
+        gap: 0.75rem;
+        padding: 0;
+        list-style: none;
+    }
+
+    .skill-col {
+        color: var(--text2);
+        font-size: 15px;
+
+        h2 {
+            font-family: var(--font-mono);
+            font-size: 11.5px;
+            color: var(--faint);
+            margin-bottom: 16px;
+        }
+    }
+
+    .skill {
+        display: flex;
+        font-family: var(--font-sans);
+        align-items: center;
+        gap: 10px;
+    }
+
+    .skill__icon {
+        display: inline-block;
+        width: 17px;
+        height: 17px;
+        background-color: var(--icon-color);
+        mask: var(--icon-url) center / contain no-repeat;
+        flex-shrink: 0;
     }
 </style>
