@@ -1,0 +1,132 @@
+---
+interface Props {
+    email: string;
+    resetAfter?: number;
+}
+
+const { email, resetAfter = 3000 } = Astro.props;
+---
+
+<button
+    class="copy-email__button"
+    type="button"
+    data-copy-email={email}
+    data-reset-after={resetAfter}
+>
+    <span>{email}</span>
+    <span class="copy-email__icons">
+        <span class="copy-email__icon copy-email__icon--copy"></span>
+        <span class="copy-email__icon copy-email__icon--check"></span>
+    </span>
+</button>
+
+<script>
+    const resetTimers = new WeakMap<HTMLButtonElement, number>();
+
+    const buttons = document.querySelectorAll<HTMLButtonElement>('[data-copy-email]');
+
+    buttons.forEach((button) => {
+        //prevent duplicate listeners if script re-runs for some reason
+        if (button.dataset.copyInitialized === 'true') return;
+
+        button.dataset.copyInitialized = 'true';
+
+        button.addEventListener('click', async () => {
+            const email = button.dataset.copyEmail;
+
+            if (!email) return;
+
+            try {
+                await navigator.clipboard.writeText(email); //copy op, returns promise
+                const existingTimer = resetTimers.get(button);
+
+                if (existingTimer !== undefined) {
+                    window.clearTimeout(existingTimer);
+                }
+
+                button.classList.add('is-copied'); //add new class to handle icon change
+
+                //calculate reset delay
+                const parsedDelay = Number(button.dataset.resetAfter);
+                const delay = Number.isFinite(parsedDelay) ? parsedDelay : 3000;
+
+                //start timer based on input (default 3000ms)
+                const timer = window.setTimeout(() => {
+                    button.classList.remove('is-copied');
+                    resetTimers.delete(button);
+                }, delay);
+
+                resetTimers.set(button, timer);
+            } catch (error) {
+                console.error('could not copy email', error);
+            }
+        });
+    });
+</script>
+
+<style>
+    .copy-email__button {
+        display: inline-flex;
+        font-family: var(--font-mono);
+        font-size: 14px;
+        padding: 11px 17px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: transparent;
+        color: var(--text);
+        cursor: pointer;
+        align-items: center;
+        gap: 10px;
+        transition:
+            background 0.2s,
+            color 0.2s;
+    }
+
+    .copy-email__button:hover {
+        background: var(--text);
+        color: var(--bg);
+        border-color: var(--text);
+    }
+
+    .copy-email__icons {
+        display: grid;
+        place-items: center;
+        flex-shrink: 0;
+    }
+
+    .copy-email__icon {
+        grid-area: 1 / 1;
+        display: block;
+        width: 1rem;
+        height: 1rem;
+        background-color: currentColor;
+        mask-position: center;
+        mask-repeat: no-repeat;
+        mask-size: contain;
+        transition:
+            opacity 180ms ease,
+            transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .copy-email__icon--copy {
+        mask-image: url('/icons/copy.svg');
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    .copy-email__icon--check {
+        mask-image: url('/icons/check.svg');
+        opacity: 0;
+        transform: translateY(70%) scale(0.5);
+    }
+
+    .copy-email__button.is-copied .copy-email__icon--copy {
+        opacity: 0;
+        transform: translateY(-70%) scale(0.5);
+    }
+
+    .copy-email__button.is-copied .copy-email__icon--check {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+</style>
