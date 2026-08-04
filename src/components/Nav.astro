@@ -12,15 +12,15 @@ const isHome = pathname === '/';
 ---
 
 <nav>
-    <a href="/"> joão lutti </a>
+    <a class="logo" href="/"> joão lutti </a>
     {
         isHome && (
             <div class="nav-links">
                 <a href="#work">work</a>
                 <a href="/projects">projects</a>
                 <a href="/writing">writing</a>
-                <a href="">resume</a>
-                <button>test</button>
+                <a href="filefortest.pdf">resume</a>
+                <button>theme</button>
             </div>
         )
     }
@@ -55,10 +55,38 @@ const isHome = pathname === '/';
         height: var(--nav-height);
     }
 
+    a {
+        text-decoration: none;
+    }
+
+    .logo {
+        font-weight: 600;
+        color: var(--text);
+    }
+
     .nav-links {
         display: flex;
         align-items: center;
         gap: 24px;
+        a {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        a[href$='.pdf'] {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            padding: 7px 13px;
+            border: 1px solid var(--border-strong);
+            border-radius: 8px;
+            color: var(--text);
+        }
+
+        a[href$='.pdf']:hover {
+            background: var(--text);
+            color: var(--bg);
+            border-color: var(--text);
+        }
     }
 
     button {
