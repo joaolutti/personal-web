@@ -1,8 +1,15 @@
 ---
-const { section, text } = Astro.props;
+interface Props {
+    section: string;
+    text?: string;
+    marginBottom?: string;
+}
+
+
+const { section, text, marginBottom = '32px' } = Astro.props;
 ---
 
-<div class="title">
+<div class="title" style={`--sec-margin-bottom: ${marginBottom}`}>
     <h1>
         {section}
     </h1>
@@ -14,7 +21,7 @@ const { section, text } = Astro.props;
         display: flex;
         align-items: baseline;
         gap: 12px;
-        margin-bottom: 32px;
+        margin-bottom: var(--sec-margin-bottom);
     }
 
     h1 {

@@ -2,20 +2,101 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectDetail from '../components/ProjectDetail.astro';
+import SectionTitle from '../components/SectionTitle.astro';
 
 const projects = await getCollection('projects');
 ---
 
 <BaseLayout>
-    <section id="header"></section>
+    <section id="header">
+        <SectionTitle section="work — in detail" />
+        <h1>selected work</h1>
+        <p>
+            Three projects I'm proud of, shown from the problem down to the last pixel. Each was
+            designed and built end to end.
+        </p>
+        <nav>
+            {
+                projects.map((project, i) => (
+                    <>
+                        <a href={`#${project.id}`}>
+                            <span>{project.data.title}</span>
+                        </a>
+                        {i < projects.length - 1 && <span> • </span>}
+                    </>
+                ))
+            }
+        </nav>
+    </section>
 
     <section id="projectDetail">
         {projects.map((project) => <ProjectDetail project={project} />)}
+    </section>
+
+    <section id="footer">
+        <div>
+            <SectionTitle section="what's next" marginBottom="6px" />
+            <a href="/#cta">reach out! →</a>
+        </div>
     </section>
 </BaseLayout>
 
 <style>
     #header {
         padding: 110px 0 40px;
+    }
+
+    h1 {
+        color: var(--text);
+        font-size: clamp(2.4rem, 7vw, 4rem);
+        line-height: 1;
+        font-weight: 500;
+        margin: 0 0 22px;
+    }
+
+    p {
+        color: var(--muted);
+        font-size: 20px;
+        line-height: 1.55;
+        max-width: 52ch;
+        text-wrap: pretty;
+        margin: 0 0 28px;
+    }
+
+    nav {
+        display: flex;
+        gap: 20px;
+        font-family: var(--font-mono);
+        color: var(--muted);
+        font-size: 13px;
+
+        a {
+            color: var(--muted);
+            text-decoration: none;
+
+            &:hover {
+                color: var(--text);
+            }
+        }
+    }
+
+    #footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 34px 0 80px;
+        border-top: 1px solid var(--border);
+
+        a {
+            text-decoration: none;
+            color: var(--text);
+            font-size: 22px;
+            font-weight: 500;
+            transition: padding-left 0.25s ease;
+
+            &:hover {
+                padding-left: 10px;
+            }
+        }
     }
 </style>

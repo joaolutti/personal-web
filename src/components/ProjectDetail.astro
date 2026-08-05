@@ -10,7 +10,7 @@ const stackArray = project.data.stack;
 const { Content } = await render(project);
 ---
 
-<article>
+<article id={project.id}>
     <div class="title">
         {project.data.title}
     </div>
