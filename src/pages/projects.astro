@@ -1,5 +1,15 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectDetail from '../components/ProjectDetail.astro';
+
+const projects = await getCollection('projects');
 ---
 
-<BaseLayout />
+<BaseLayout>
+    <section id="header"></section>
+
+    <section id="projectDetail">
+        {projects.map((project) => <ProjectDetail project={project} />)}
+    </section>
+</BaseLayout>

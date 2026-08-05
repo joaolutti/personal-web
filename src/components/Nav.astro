@@ -28,7 +28,7 @@ const isHome = pathname === '/';
         projectsActive && (
             <div class="nav-links">
                 <a href="/writing">writing</a>
-                <a href="/">back</a>
+                <a href="/">← back</a>
                 <button>theme</button>
             </div>
         )
@@ -37,7 +37,7 @@ const isHome = pathname === '/';
         writingActive && (
             <div class="nav-links">
                 <a href="/projects">projects</a>
-                <a href="/">back</a>
+                <a href="/">← back</a>
                 <button>theme</button>
             </div>
         )
@@ -71,6 +71,9 @@ const isHome = pathname === '/';
         a {
             color: var(--muted);
             font-size: 14px;
+        }
+        a:hover {
+            color: var(--text);
         }
 
         a[href$='.pdf'] {
