@@ -6,7 +6,7 @@ stack: ['Bash', 'TypeScript', 'Go']
 highlights:
     - '20ms terminal cold start'
     - 'Full disk encryption by default'
-    - '~1% CPU usage with full shell running'
+    - '~ 1% CPU usage with full shell running'
 links:
     live: 'https://test.com'
     source: 'https://source-test.com'

@@ -1,23 +1,59 @@
 ---
-import type { CollectionEntry } from 'astro:content';
+import { render, type CollectionEntry } from 'astro:content';
 
 interface Props {
     project: CollectionEntry<'projects'>;
 }
 
 const { project } = Astro.props;
+const stackArray = project.data.stack;
+const { Content } = await render(project);
 ---
 
 <article>
     <div class="title">
         {project.data.title}
     </div>
-    <p class="project-brief"></p>
-    <div class="info-grid"></div>
-    <div class="img-wrapper"></div>
+    <p class="project-brief">
+        {project.data.brief}
+    </p>
+    <div class="info-grid">
+        <div>
+            <p>role</p>
+            <span>{project.data.role}</span>
+        </div>
+        <!-- look into putting icons here instead, or text + icons -->
+        <div>
+            <p>stack</p>
+            <span>
+                {
+                    stackArray.map((entry, i) => (
+                        <>
+                            <span>{entry}</span>
+                            {i < stackArray.length - 1 && <span> • </span>}
+                        </>
+                    ))
+                }
+            </span>
+        </div>
+    </div>
+    <div class="img-wrapper">
+        <span>[ placeholder ]</span>
+    </div>
     <div class="detail-grid">
-        <div class="description"></div>
-        <div class="highlights-links"></div>
+        <div class="description">
+            <Content />
+        </div>
+        <div class="highlights-links">
+            <h3>highlights</h3>
+            <ul>
+                {project.data.highlights.map((highlight) => <li>{highlight}</li>)}
+            </ul>
+            <div class="links">
+                {project.data.links.live && <a href={project.data.links.live}>live ↗</a>}
+                {project.data.links.source && <a href={project.data.links.source}>source ↗</a>}
+            </div>
+        </div>
     </div>
 </article>
 
@@ -26,5 +62,121 @@ const { project } = Astro.props;
         padding: 60px 0;
         border-top: 1px solid var(--border);
         scroll-margin-top: 80px;
+    }
+    .title {
+        color: var(--text);
+        font-size: clamp(2rem, 5vw, 3rem);
+        line-height: 1;
+        font-weight: 500;
+        display: flex;
+        align-items: baseline;
+        gap: 20px;
+        margin-bottom: 14px;
+    }
+
+    .project-brief {
+        font-size: 20px;
+        line-height: 1.5;
+        color: var(--text2);
+        max-width: 54ch;
+        margin: 0 0 30px;
+        text-wrap: pretty;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, auto);
+        margin-bottom: 34px;
+        justify-content: space-between;
+        gap: 20px;
+
+        p {
+            font-family: var(--font-mono);
+            font-size: 11.5px;
+            color: var(--faint);
+            margin-bottom: 8px;
+        }
+        span {
+            font-size: 15px;
+            color: var(--text2);
+        }
+    }
+
+    .img-wrapper {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        min-height: 400px;
+        margin-bottom: 34px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: repeating-linear-gradient(
+            135deg,
+            transparent,
+            transparent 9px,
+            var(--stripe) 9px,
+            var(--stripe) 10px
+        );
+
+        span {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--faint);
+        }
+    }
+
+    .detail-grid {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 40px;
+        align-items: start;
+    }
+
+    .description {
+        font-size: px;
+        line-height: 1.7;
+        color: var(--muted);
+        margin: 0;
+        text-wrap: pretty;
+    }
+
+    .highlights-links {
+        h3 {
+            font-family: var(--font-mono);
+            font-size: 11.5px;
+            color: var(--faint);
+            margin-bottom: 14px;
+        }
+
+        ul {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            font-size: 15px;
+            color: var(--text2);
+            border-top: 1px solid var(--border);
+            padding-top: 12px;
+        }
+    }
+
+    .links {
+        display: flex;
+        gap: 16px;
+        margin-top: 20px;
+        font-family: var(--font-mono);
+        font-size: 13px;
+
+        a {
+            text-decoration: none;
+            color: var(--muted);
+            &:hover {
+                color: var(--text);
+            }
+        }
     }
 </style>

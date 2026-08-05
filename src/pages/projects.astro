@@ -13,3 +13,9 @@ const projects = await getCollection('projects');
         {projects.map((project) => <ProjectDetail project={project} />)}
     </section>
 </BaseLayout>
+
+<style>
+    #header {
+        padding: 110px 0 40px;
+    }
+</style>
