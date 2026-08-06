@@ -1,33 +1,32 @@
 ---
+import { render, type CollectionEntry } from "astro:content";
 interface Props {
-    title: string;
-    year: string;
-    description: string;
-    stack: string[];
+    project: CollectionEntry<'projects'>
 }
 
-const { title, year, description, stack } = Astro.props;
+const { project } = Astro.props;
+const stackArray = project.data.stack;
 ---
 
-<article class="card">
-    <a href="">
+<article id={project.id} class="card">
+    <a href=`/projects#${project.id}`>
         <div class="upper-row">
             <div class="project-title">
                 <h2>
-                    {title}
+                    {project.data.title}
                 </h2>
             </div>
-            <h3>{year}</h3>
+            <h3>{project.data.year}</h3>
         </div>
         <div class="bottom-row">
             <div class="body">
-                <p>{description}</p>
+                <p>{project.data.brief}</p>
                 <span class="stack-item">
                     {
-                        stack.map((entry, i) => (
+                        stackArray.map((entry, i) => (
                             <>
                                 <span>{entry}</span>
-                                {i < stack.length - 1 && <span> • </span>}
+                                {i < stackArray.length - 1 && <span> • </span>}
                             </>
                         ))
                     }

@@ -1,5 +1,6 @@
 ---
 title: 'jupiter'
+year: 2025
 brief: 'An opinionated linux distribution based on Arch and the tiling WM Hyprland. Ships with everything a software engineer needs out of the box.'
 role: 'solo project'
 stack: ['Bash', 'TypeScript', 'Go']
@@ -10,6 +11,7 @@ highlights:
 links:
     live: 'https://test.com'
     source: 'https://source-test.com'
+featured: true
 ---
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sagittis diam id justo tincidunt pulvinar nec vitae dui. Integer consequat lorem non risus tristique, sit amet dictum dui molestie. Quisque ornare elit sem, aliquam vehicula ante iaculis ut.

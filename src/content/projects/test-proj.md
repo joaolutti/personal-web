@@ -1,5 +1,6 @@
 ---
 title: 'mercury'
+year: 2026
 brief: 'An opinionated linux distribution based on Arch and the tiling WM Hyprland. Ships with everything a software engineer needs out of the box.'
 role: 'solo project'
 stack: ['Bash', 'TypeScript', 'Go']

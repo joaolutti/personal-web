@@ -6,8 +6,15 @@ import { categories, getIconPath, icons, stack } from '../data/stack';
 import RowEntry from '../components/RowEntry.astro';
 import CopyEmail from '../components/CopyEmail.astro';
 import Footer from '../components/Footer.astro';
+import { getCollection } from 'astro:content';
 
 const email = 'joao@hello-test.com';
+
+const projects = await getCollection('projects');
+
+const featured = projects.filter((proj) => proj.data.featured);
+console.log(featured);
+console.log(projects.map((proj) => proj.data.featured));
 ---
 
 <BaseLayout>
@@ -29,12 +36,19 @@ const email = 'joao@hello-test.com';
 
     <section id="work">
         <SectionTitle section="selected work" />
-        <Card
+        {
+            featured.map((proj) => (
+                <>
+                    <Card project={proj} />
+                </>
+            ))
+        }
+        <!-- <Card
             title="testing title"
             year="2026"
             description="a personal website built with astro, tailwind, and typescript"
             stack={['astro', 'tailwind', 'typescript']}
-        />
+        /> -->
         <div class="projects-cta">
             <a href="#">all work in detail →</a>
         </div>

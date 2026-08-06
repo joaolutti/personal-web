@@ -5,6 +5,8 @@ import ProjectDetail from '../components/ProjectDetail.astro';
 import SectionTitle from '../components/SectionTitle.astro';
 
 const projects = await getCollection('projects');
+
+// console.log(projects.map((project) => project.id));
 ---
 
 <BaseLayout>
