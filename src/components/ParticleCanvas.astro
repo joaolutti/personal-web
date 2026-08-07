@@ -1,0 +1,24 @@
+---
+
+---
+
+<canvas class="particle-canvas"/>
+
+<style>
+    .particle-canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+</style>
+
+<script>
+    import { ParticleField } from "../lib/particle-field";
+
+    const canvas = document.querySelector<HTMLCanvasElement>("canvas.particle-canvas");
+
+    if (canvas) {
+        const field = new ParticleField(canvas, { accentColor: "#ffff"});
+    }
+
+</script>
