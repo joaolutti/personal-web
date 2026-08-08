@@ -2,7 +2,7 @@
 
 ---
 
-<canvas class="particle-canvas"/>
+<canvas class="particle-canvas"></canvas>
 
 <style>
     .particle-canvas {
@@ -13,12 +13,12 @@
 </style>
 
 <script>
-    import { ParticleField } from "../lib/particle-field";
+    import { ParticleField } from '../lib/particle-field';
 
-    const canvas = document.querySelector<HTMLCanvasElement>("canvas.particle-canvas");
+    const canvas = document.querySelector<HTMLCanvasElement>('canvas.particle-canvas');
 
     if (canvas) {
-        const field = new ParticleField(canvas, { accentColor: "#ffff"});
+        const field = new ParticleField(canvas, { accentColor: '#6f685c' });
+        if (import.meta.env.DEV) (window as any).__field = field;
     }
-
 </script>
