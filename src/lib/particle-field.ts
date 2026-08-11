@@ -110,7 +110,7 @@ export class ParticleField {
             spin: 0.3,
             tilt: -0.25,
             wobble: 0.2,
-            dotSize: 1,
+            dotSize: 3,
             dotDepth: 1.5,
             dotAlpha: 0.2,
             dotAlphaDepth: 0.5,
@@ -188,9 +188,7 @@ export class ParticleField {
                 p.y += (p.ty - p.y) * this.easeK;
             }
 
-            //per particle phase offset
-            const wave = Math.sin(t * 2 + p.seed + Math.PI * 2);
-            const size = 2 + wave * 1.5;
+            const size = this.cfg.dotSize;
 
             ctx.fillRect(p.x - size / 2, p.y - size / 2, size, size);
         }
