@@ -4,6 +4,14 @@ export interface FieldConfig {
     shape?: ShapeName;
     scale?: number;
     ease?: number;
+
+    spin?: number;
+    tilt?: number;
+    wobble?: number;
+    dotSize?: number;
+    dotDepth?: number;
+    dotAlpha?: number;
+    dotAlphaDepth?: number;
 }
 
 interface Particle {
@@ -14,7 +22,7 @@ interface Particle {
     theta: number;
     phi: number;
     seed: number; //rand per particle\
-    
+
     //curr
     x: number;
     y: number;
@@ -92,13 +100,20 @@ export class ParticleField {
         if (!ctx) throw new Error('could not get 2D context');
         this.ctx = ctx;
 
-        //todo: tweak with these default values later 
+        //todo: tweak with these default values later
         this.cfg = {
             accentColor: '#FFF',
             count: 800,
             shape: 'orb',
             scale: 0.35,
             ease: 0.12,
+            spin: 0.3,
+            tilt: -0.25,
+            wobble: 0.2,
+            dotSize: 1,
+            dotDepth: 1.5,
+            dotAlpha: 0.2,
+            dotAlphaDepth: 0.5,
             ...config,
         };
         this.points = buildSphere(this.cfg.count);
@@ -143,13 +158,26 @@ export class ParticleField {
         const { ctx, width, height, points, cx, cy, radius } = this;
         ctx.clearRect(0, 0, width, height); //clear before rendering new one
         ctx.fillStyle = this.cfg.accentColor;
-        
-        for (const p of points) {
-            //uz exists but just rendering 2D for now
-            const [ux, uy] = this.unitOf(p, t);
 
-            p.tx = cx + ux * radius;
-            p.ty = cy + uy * radius;
+        const ax = this.cfg.tilt + Math.sin(t * 0.15) * this.cfg.wobble;
+        const ay = t * this.cfg.spin;
+
+        const cosA = Math.cos(ax);
+        const sinA = Math.sin(ax);
+        const cosB = Math.cos(ay);
+        const sinB = Math.sin(ay);
+
+        for (const p of points) {
+            const [ux, uy, uz] = this.unitOf(p, t);
+
+            const y1 = uy * cosA - uz * sinA;
+            const z1 = uy * sinA + uz * cosA;
+
+            const rx = ux * cosB + z1 * sinB;
+            const rz = -ux * sinB + z1 * cosB;
+
+            p.tx = this.cx + rx * this.radius;
+            p.ty = this.cy + y1 * this.radius;
 
             if (!p.initialized) {
                 p.x = p.tx;
