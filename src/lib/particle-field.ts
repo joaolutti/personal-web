@@ -1,14 +1,70 @@
 export interface FieldConfig {
     accentColor?: string;
-    spacing?: number;
+    count?: number;
+    shape?: ShapeName;
+    scale?: number;
+    ease?: number;
 }
 
 interface Particle {
+    //base unit sphere aprox. -1 to 1
+    bx: number;
+    by: number;
+    bz: number;
+    theta: number;
+    phi: number;
+    seed: number; //rand per particle\
+    
+    //curr
     x: number;
     y: number;
-    col: number;
-    row: number;
-    seed: number;
+
+    //target
+    tx: number;
+    ty: number;
+
+    initialized: boolean;
+}
+
+type ShapeFn = (p: Particle, t: number) => readonly [number, number, number];
+
+const orb: ShapeFn = (p) => {
+    return [p.bx, p.by, p.bz];
+};
+
+const SHAPES = {
+    orb,
+} as const;
+
+export type ShapeName = keyof typeof SHAPES;
+
+function buildSphere(count: number): Particle[] {
+    const pts: Particle[] = [];
+    const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+
+    for (let i = 0; i < count; i++) {
+        const y = 1 - ((i + 0.5) / count) * 2;
+        const r = Math.sqrt(Math.max(0, 1 - y * y));
+        const angle = goldenAngle * i;
+
+        const x = Math.cos(angle) * r;
+        const z = Math.sin(angle) * r;
+
+        pts.push({
+            bx: x,
+            by: y,
+            bz: z,
+            theta: Math.atan2(z, x),
+            phi: Math.acos(Math.max(-1, Math.min(1, y))),
+            seed: Math.random(),
+            x: 0,
+            y: 0,
+            tx: 0,
+            ty: 0,
+            initialized: false,
+        });
+    }
+    return pts;
 }
 
 export class ParticleField {
@@ -17,13 +73,17 @@ export class ParticleField {
     private cfg: Required<FieldConfig>;
     private points: Particle[] = [];
     private ro: ResizeObserver;
-    //ResizeObserver watches the element itself, compared to window.resize that just watches window size changes
 
     private width = 0;
     private height = 0;
+    private cx = 0;
+    private cy = 0;
+    private radius = 1;
+    private easeK = 0.12;
 
     private raf = 0; //requestAnimationFrame
     private t0 = performance.now(); //start of animation
+    private lastFrame = performance.now(); //timestamp for previous frame
 
     constructor(canvas: HTMLCanvasElement, config: FieldConfig = {}) {
         this.canvas = canvas;
@@ -32,7 +92,16 @@ export class ParticleField {
         if (!ctx) throw new Error('could not get 2D context');
         this.ctx = ctx;
 
-        this.cfg = { accentColor: '#FFF', spacing: 24, ...config };
+        //todo: tweak with these default values later 
+        this.cfg = {
+            accentColor: '#FFF',
+            count: 800,
+            shape: 'orb',
+            scale: 0.35,
+            ease: 0.12,
+            ...config,
+        };
+        this.points = buildSphere(this.cfg.count);
 
         this.resize();
         this.ro = new ResizeObserver(this.resize);
@@ -46,7 +115,7 @@ export class ParticleField {
     }
 
     //method to normalize CSS and canvas pixels
-    private resize() {
+    private resize = () => {
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
         //css pixels
@@ -59,47 +128,51 @@ export class ParticleField {
 
         //scale context so drawing lands on correct spot
         this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        this.points = this.buildGrid();
-        this.render(1);
-    }
 
-    private buildGrid(): Particle[] {
-        const { spacing } = this.cfg;
-        const pts: Particle[] = [];
-        const cols = Math.floor(this.width / spacing);
-        const rows = Math.floor(this.height / spacing);
+        this.cx = this.width / 2;
+        this.cy = this.height / 2;
 
-        const offsetX = (this.width - (cols - 1) * spacing) / 2;
-        const offsetY = (this.height - (rows - 1) * spacing) / 2;
+        this.radius = Math.min(this.width, this.height) * this.cfg.scale;
+    };
 
-        for (let r = 0; r < rows; r++) {
-            for (let c = 0; c < cols; c++) {
-                pts.push({
-                    x: offsetX + c * spacing,
-                    y: offsetY + r * spacing,
-                    c,
-                    r,
-                    seed: Math.random(),
-                });
-            }
-        }
-
-        return pts;
+    private unitOf(p: Particle, t: number): readonly [number, number, number] {
+        return SHAPES[this.cfg.shape](p, t);
     }
 
     private render(t: number) {
-        const { ctx, width, height, points } = this;
-        ctx.clearRect(0, 0, width, height);
+        const { ctx, width, height, points, cx, cy, radius } = this;
+        ctx.clearRect(0, 0, width, height); //clear before rendering new one
         ctx.fillStyle = this.cfg.accentColor;
-        for (const p of this.points) {
-            const wave = Math.sin(t * 2 + p.seed + Math.PI * 2); //one cycle every pi secs
+        
+        for (const p of points) {
+            //uz exists but just rendering 2D for now
+            const [ux, uy] = this.unitOf(p, t);
+
+            p.tx = cx + ux * radius;
+            p.ty = cy + uy * radius;
+
+            if (!p.initialized) {
+                p.x = p.tx;
+                p.y = p.ty;
+                p.initialized = true;
+            } else {
+                p.x += (p.tx - p.x) * this.easeK;
+                p.y += (p.ty - p.y) * this.easeK;
+            }
+
+            //per particle phase offset
+            const wave = Math.sin(t * 2 + p.seed + Math.PI * 2);
             const size = 2 + wave * 1.5;
+
             ctx.fillRect(p.x - size / 2, p.y - size / 2, size, size);
-            //need - size/2 since fillRect takes top-left and not center
         }
     }
 
     private frame = (now: number) => {
+        const dt = Math.min((now - this.lastFrame) / 1000, 0.1);
+        this.lastFrame = now;
+
+        this.easeK = 1 - Math.pow(1 - this.cfg.ease, dt * 60);
         const t = (now - this.t0) / 1000; //seconds since start of animation
         this.render(t);
         this.raf = requestAnimationFrame(this.frame);

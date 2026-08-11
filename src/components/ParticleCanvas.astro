@@ -17,8 +17,5 @@
 
     const canvas = document.querySelector<HTMLCanvasElement>('canvas.particle-canvas');
 
-    if (canvas) {
-        const field = new ParticleField(canvas, { accentColor: '#6f685c' });
-        if (import.meta.env.DEV) (window as any).__field = field;
-    }
+    if (canvas) new ParticleField(canvas)
 </script>
