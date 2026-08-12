@@ -12,6 +12,11 @@ export interface FieldConfig {
     dotDepth?: number;
     dotAlpha?: number;
     dotAlphaDepth?: number;
+
+    //cursor interaction
+    cursorRadius?: number;
+    cursorForce?: number;
+    //cycleOnClick?: boolean;
 }
 
 interface Particle {
@@ -89,6 +94,19 @@ export class ParticleField {
     private radius = 1;
     private easeK = 0.12;
 
+    private pointer = {
+        x: 0,
+        y: 0,
+        active: false,
+    };
+
+    //stores pointer down viewport pos.
+    private downAt: {
+        x: number;
+        y: number;
+        pointerId: number;
+    } | null = null;
+
     private raf = 0; //requestAnimationFrame
     private t0 = performance.now(); //start of animation
     private lastFrame = performance.now(); //timestamp for previous frame
@@ -105,15 +123,17 @@ export class ParticleField {
             accentColor: '#FFF',
             count: 800,
             shape: 'orb',
-            scale: 0.35,
+            scale: 0.34,
             ease: 0.12,
-            spin: 0.3,
-            tilt: -0.25,
-            wobble: 0.2,
-            dotSize: 3,
-            dotDepth: 1.5,
+            spin: 0.28,
+            tilt: 0.5,
+            wobble: 0,
+            dotSize: 1.2,
+            dotDepth: 1.6,
             dotAlpha: 0.2,
-            dotAlphaDepth: 0.5,
+            dotAlphaDepth: 0.62,
+            cursorRadius: 100,
+            cursorForce: 20,
             ...config,
         };
         this.points = buildSphere(this.cfg.count);
@@ -121,10 +141,23 @@ export class ParticleField {
         this.resize();
         this.ro = new ResizeObserver(this.resize);
         this.ro.observe(canvas);
+
+        canvas.addEventListener('pointermove', this.onPointerMove);
+        canvas.addEventListener('pointerleave', this.onPointerLeave);
+        canvas.addEventListener('pointerdown', this.onPointerDown);
+        canvas.addEventListener('pointerup', this.onPointerUp);
+        canvas.addEventListener('pointercancel', this.onPointerCancel);
+
         this.raf = requestAnimationFrame(this.frame);
     }
 
     destroy() {
+        this.canvas.removeEventListener('pointermove', this.onPointerMove);
+        this.canvas.removeEventListener('pointerleave', this.onPointerLeave);
+        this.canvas.removeEventListener('pointerdown', this.onPointerDown);
+        this.canvas.removeEventListener('pointerup', this.onPointerUp);
+        this.canvas.removeEventListener('pointercancel', this.onPointerCancel);
+
         cancelAnimationFrame(this.raf);
         this.ro.disconnect();
     }
@@ -154,7 +187,93 @@ export class ParticleField {
         return SHAPES[this.cfg.shape](p, t);
     }
 
-    private render(t: number) {
+    private pointFromEvent(e: PointerEvent) {
+        const rect = this.canvas.getBoundingClientRect();
+
+        return {
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top,
+        };
+    }
+
+    private onPointerMove = (e: PointerEvent) => {
+        const point = this.pointFromEvent(e);
+
+        this.pointer.x = point.x;
+        this.pointer.y = point.y;
+        this.pointer.active = true;
+    };
+
+    private onPointerLeave = () => {
+        this.pointer.active = false;
+    };
+
+    private onPointerDown = (e: PointerEvent) => {
+        this.downAt = {
+            x: e.clientX,
+            y: e.clientY,
+            pointerId: e.pointerId,
+        };
+
+        this.canvas.setPointerCapture(e.pointerId);
+    };
+
+    private onPointerUp = (e: PointerEvent) => {
+        const down = this.downAt;
+        this.downAt = null;
+
+        if (!down) return;
+        if (down.pointerId !== e.pointerId) return;
+
+        if (this.canvas.hasPointerCapture(e.pointerId)) {
+            this.canvas.releasePointerCapture(e.pointerId);
+        }
+
+        const dx = e.clientX - down.x;
+        const dy = e.clientY - down.y;
+        const moved = Math.hypot(dx, dy);
+    };
+
+    private onPointerCancel = (e: PointerEvent) => {
+        if (this.canvas.hasPointerCapture(e.pointerId)) {
+            this.canvas.releasePointerCapture(e.pointerId);
+        }
+
+        this.downAt = null;
+        this.pointer.active = false;
+    };
+
+    private applyPointerForce(p: Particle, frameScale: number) {
+        if (!this.pointer.active) return;
+
+        let dx = p.x - this.pointer.x;
+        let dy = p.y - this.pointer.y;
+        let distanceSquared = dx * dx + dy * dy;
+
+        const radius = this.cfg.cursorRadius;
+        const radiusSquared = radius * radius;
+
+        if (distanceSquared >= radiusSquared) return;
+
+        if (distanceSquared < 1e-8) {
+            const angle = p.seed * Math.PI * 2;
+            dx = Math.cos(angle) * 0.001;
+            dy = Math.sin(angle) * 0.001;
+            distanceSquared = dx * dx + dy * dy;
+        }
+
+        const distance = Math.sqrt(distanceSquared);
+        const nx = dx / distance;
+        const ny = dy / distance;
+
+        const falloff = 1 - distance / radius;
+        const force = falloff * this.cfg.cursorForce * frameScale;
+
+        p.x += nx * force;
+        p.y += ny * force;
+    }
+
+    private render(t: number, easeK: number, frameScale: number, snap: boolean) {
         const { ctx, width, height, points, cx, cy, radius } = this;
         ctx.clearRect(0, 0, width, height); //clear before rendering new one
         ctx.fillStyle = this.cfg.accentColor;
@@ -179,6 +298,8 @@ export class ParticleField {
             p.tx = this.cx + rx * this.radius;
             p.ty = this.cy + y1 * this.radius;
 
+            this.applyPointerForce(p, frameScale);
+
             if (!p.initialized) {
                 p.x = p.tx;
                 p.y = p.ty;
@@ -197,10 +318,11 @@ export class ParticleField {
     private frame = (now: number) => {
         const dt = Math.min((now - this.lastFrame) / 1000, 0.1);
         this.lastFrame = now;
+        const frameScale = dt * 60;
 
         this.easeK = 1 - Math.pow(1 - this.cfg.ease, dt * 60);
         const t = (now - this.t0) / 1000; //seconds since start of animation
-        this.render(t);
+        this.render(t, this.easeK, frameScale, false);
         this.raf = requestAnimationFrame(this.frame);
     };
 }
