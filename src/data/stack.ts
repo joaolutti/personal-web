@@ -55,7 +55,7 @@ export interface Skill {
 }
 
 export function getIconPath(icon: IconSlug): string {
-    return `icons/${icon}.svg`;
+    return `/icons/${icon}.svg`;
 }
 
 export const stack = [
