@@ -1,11 +1,3 @@
-/*
-languages - ts #3178C6, python #3776AB, go #00ADD8, sql #00758F
-frameworks - next.js #ECE7DD, angular #ffff, astro #BC52EE, node - express #5FA04E, postgreSQL #4169E1
-tools - git #F03C2E, docker #2496ED, figma #F24E1E cloudflare #F38020
-
-
-*/
-
 //as const since they are meant to be immutable
 export const categories = ['languages', 'frameworks', 'tools'] as const;
 

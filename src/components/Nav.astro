@@ -18,27 +18,14 @@ const isHome = pathname === '/';
             <div class="nav-links">
                 <a href="#work">work</a>
                 <a href="/projects">projects</a>
-                <a href="/writing">writing</a>
                 <a href="filefortest.pdf">resume</a>
-                <button>theme</button>
             </div>
         )
     }
     {
         projectsActive && (
             <div class="nav-links">
-                <a href="/writing">writing</a>
                 <a href="/">← back</a>
-                <button>theme</button>
-            </div>
-        )
-    }
-    {
-        writingActive && (
-            <div class="nav-links">
-                <a href="/projects">projects</a>
-                <a href="/">← back</a>
-                <button>theme</button>
             </div>
         )
     }
